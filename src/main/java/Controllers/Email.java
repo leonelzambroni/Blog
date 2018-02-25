@@ -12,7 +12,9 @@ public class Email
     {
 	File file = new File("emails.txt");
     FileWriter fileWriter = new FileWriter(file);
-    public Email() throws java.io.IOException {
+    public Email() throws java.io.IOException 
+    {
+    	
     }
 
     public void newPostNotification(Post post,Group group)
@@ -27,7 +29,7 @@ public class Email
         to = to.substring(0,to.length()-1);
         try 
         {
-            fileWriter.write("TO:\t" + to + "\nSubject:\t" + subject + "\n" +"Text:" + body );
+            fileWriter.write("TO: " + to + "\n" + "Subject: " + subject + "\n" +"Text:" + body );
         } catch (IOException e)
         {
         	

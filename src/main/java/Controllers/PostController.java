@@ -1,7 +1,8 @@
 package Controllers;
 
 import java.io.BufferedReader;
-
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
@@ -17,7 +18,9 @@ import java.util.Scanner;
 
 import com.blog.Blog.App;
 
+import Models.Group;
 import Models.Post;
+import Models.User;
 import Controllers.GroupController;
 import Controllers.Email;
 
@@ -31,13 +34,7 @@ public class PostController {
     public static void newPost()
     {
      	Post p = new Post();
-     	Email em = null;
-		try {
-			em = new Email();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+     
 
     	try {
         System.out.println( "Type the Post Title" );
@@ -86,7 +83,14 @@ public class PostController {
     	 }
         
         posts.add(p);
-        em.newPostNotification(p, p.getGroup());
+    	Email em = null;
+		try {
+			em = new Email();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        newPostNotification(p, p.getGroup());
         
         
         System.out.println( "What do you want to do next? 1-Add another post 2-back to menu" );
@@ -347,5 +351,34 @@ public class PostController {
                     }        
                 });
 
+    }
+    
+    public static void newPostNotification(Post post,Group group)
+    {
+    File file = new File("emails.txt");
+    FileWriter fileWriter = null;
+	try {
+		fileWriter = new FileWriter(file);
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+    
+
+    
+        String to = "";
+        String subject = "New Post in the Group:  " + group.getName();
+        String body= "\n" + "Title: "+post.getTitle()+"\n" +"Text:" + "\n" +post.getBody()+"\n";
+        for (User user : group.getMembers()){
+            to = to + user.getEmail() + ",";
+        }
+        to = to.substring(0,to.length()-1);
+        try 
+        {
+            fileWriter.write("TO: " + to + "\n" + "Subject: " + subject + "\n" +"Text:" + body );
+        } catch (IOException e)
+        {
+        	
+        }
     }
 }
